@@ -30,7 +30,6 @@ const App = () => {
       setCount(newcount);
     }
     setUsers(newUsers);
-    console.log(newUsers);
   };
 
   return (
