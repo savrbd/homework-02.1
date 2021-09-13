@@ -3,10 +3,21 @@ import Qualitie from "./qualitie";
 import Bookmark from "./bookmark";
 import PropTypes from "prop-types";
 
-const User = ({ id, name, qualities, profession, completedMeetings, rate, _id, status, favouritesStatus, onDelete }) => {
+const User = ({
+    // id,
+    name,
+    qualities,
+    profession,
+    completedMeetings,
+    rate,
+    _id,
+    status,
+    favouritesStatus,
+    onDelete
+}) => {
     return (
         <>
-            <tr key={id}>
+            <tr key={_id}>
                 <td>{name}</td>
                 <td>
                     {qualities.map((quality) => (
@@ -38,14 +49,14 @@ const User = ({ id, name, qualities, profession, completedMeetings, rate, _id, s
     );
 };
 User.propTypes = {
-    id: PropTypes.symbol.isRequired,
+    // id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    qualities: PropTypes.object.isRequired,
+    qualities: PropTypes.array,
     profession: PropTypes.object.isRequired,
-    completedMeetings: PropTypes.func.isRequired,
+    completedMeetings: PropTypes.number.isRequired,
     rate: PropTypes.number.isRequired,
-    _id: PropTypes.symbol.isRequired,
-    status: PropTypes.bool.isRequired,
+    _id: PropTypes.string.isRequired,
+    status: PropTypes.bool,
     favouritesStatus: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired
 };
