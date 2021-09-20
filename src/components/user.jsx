@@ -13,7 +13,7 @@ const User = ({
     _id,
     status,
     favouritesStatus,
-    onDelete
+    handleDelete
 }) => {
     return (
         <>
@@ -38,7 +38,7 @@ const User = ({
                     <button
                         className="badge bg-danger"
                         onClick={() => {
-                            onDelete(_id);
+                            handleDelete(_id);
                         }}
                     >
                         delete
@@ -58,7 +58,7 @@ User.propTypes = {
     _id: PropTypes.string.isRequired,
     status: PropTypes.bool,
     favouritesStatus: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired
+    handleDelete: PropTypes.func.isRequired
 };
 
 export default User;

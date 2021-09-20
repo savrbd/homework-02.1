@@ -1,17 +1,44 @@
 import React, { useState, useEffect } from "react";
-import User from "./user";
+import UserTable from "./usersTable";
 import api from "../api";
 import Pagination from "./pagination";
 import { paginate } from "../utils/paginate";
 import PropTypes from "prop-types";
 import GroupList from "./groupList";
 import SearchStatus from "./searchStatus";
+import _ from "lodash";
 
-const Users = ({ allUsers, handleDelete, favouritesStatus }) => {
+const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProffesion] = useState();
     const [selectedProf, setSelectedProf] = useState();
-    const pageSize = 4;
+    const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
+    const pageSize = 8;
+
+    const [users, setUsers] = useState();
+    useEffect(() => {
+        api.users.fetchAll().then((data) => setUsers(data));
+    }, []);
+    let newUsers = users;
+
+    const handleDelete = (userId) => {
+        newUsers = users.filter((user) => {
+            return user._id !== userId;
+        });
+        setUsers(newUsers);
+    };
+
+    const favouritesStatus = (Id) => {
+        setUsers(
+            newUsers.filter((user) => {
+                if (user._id === Id) {
+                    user.status = !user.status;
+                    return user;
+                }
+                return user;
+            })
+        );
+    };
 
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProffesion(data));
@@ -27,15 +54,19 @@ const Users = ({ allUsers, handleDelete, favouritesStatus }) => {
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
+    const handleSort = (item) => {
+        setSortBy(item);
+    };
     const filteredUsers = selectedProf
-        ? allUsers.filter((user) => user.profession.name === selectedProf.name)
-        : allUsers;
+        ? newUsers.filter((user) => user.profession.name === selectedProf.name)
+        : newUsers;
 
     let count = 0;
     if (filteredUsers) {
         count = filteredUsers.length;
     }
-    const users = paginate(filteredUsers, currentPage, pageSize);
+    const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+    const usersCrop = paginate(sortedUsers, currentPage, pageSize);
     const clearFilter = () => {
         setSelectedProf();
     };
@@ -58,29 +89,13 @@ const Users = ({ allUsers, handleDelete, favouritesStatus }) => {
             )}
             <div className="d-flex flex-column">
                 {SearchStatus(count)}
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Имя</th>
-                            <th scope="col">Качество</th>
-                            <th scope="col">Профессия</th>
-                            <th scope="col">Встретился, раз</th>
-                            <th scope="col">Оценка</th>
-                            <th scope="col">Избранное</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user) => (
-                            <User
-                                key={user._id}
-                                onDelete={handleDelete}
-                                favouritesStatus={favouritesStatus}
-                                {...user}
-                            />
-                        ))}
-                    </tbody>
-                </table>
+                <UserTable
+                    users={usersCrop}
+                    onSort={handleSort}
+                    selectedSort={sortBy}
+                    handleDelete={handleDelete}
+                    favouritesStatus={favouritesStatus}
+                />
                 <div className="d-flex justify-content-center">
                     <Pagination
                         itemsCount={count}
@@ -94,9 +109,9 @@ const Users = ({ allUsers, handleDelete, favouritesStatus }) => {
     );
 };
 Users.propTypes = {
-    allUsers: PropTypes.array,
-    handleDelete: PropTypes.func.isRequired,
-    favouritesStatus: PropTypes.func.isRequired
+    users: PropTypes.array,
+    handleDelete: PropTypes.func,
+    favouritesStatus: PropTypes.func
 };
 
 export default Users;
