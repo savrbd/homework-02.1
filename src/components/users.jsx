@@ -57,56 +57,63 @@ const Users = () => {
     const handleSort = (item) => {
         setSortBy(item);
     };
-    const filteredUsers = selectedProf
-        ? newUsers.filter((user) => user.profession.name === selectedProf.name)
-        : newUsers;
+    if (newUsers) {
+        const filteredUsers = selectedProf
+            ? newUsers.filter(
+                (user) =>
+                    JSON.stringify(user.profession) ===
+                      JSON.stringify(selectedProf))
+            : newUsers;
 
-    let count = 0;
-    if (filteredUsers) {
-        count = filteredUsers.length;
-    }
-    const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
-    const usersCrop = paginate(sortedUsers, currentPage, pageSize);
-    const clearFilter = () => {
-        setSelectedProf();
-    };
-    return (
-        <div className="d-flex">
-            {professions && (
-                <div className="d-flex flex-column flex-shrink-0 p-3">
-                    <GroupList
-                        selectedItem={selectedProf}
-                        items={professions}
-                        onItemSelect={handleProfessionsSelect}
+        const count = filteredUsers.length;
+        const sortedUsers = _.orderBy(
+            filteredUsers,
+            [sortBy.path],
+            [sortBy.order]
+        );
+        const usersCrop = paginate(sortedUsers, currentPage, pageSize);
+        const clearFilter = () => {
+            setSelectedProf();
+        };
+        return (
+            <div className="d-flex">
+                {professions && (
+                    <div className="d-flex flex-column flex-shrink-0 p-3">
+                        <GroupList
+                            selectedItem={selectedProf}
+                            items={professions}
+                            onItemSelect={handleProfessionsSelect}
+                        />
+                        <button
+                            className="btn btn-secondary mt-2"
+                            onClick={clearFilter}
+                        >
+                            Очистить
+                        </button>
+                    </div>
+                )}
+                <div className="d-flex flex-column">
+                    {SearchStatus(count)}
+                    <UserTable
+                        users={usersCrop}
+                        onSort={handleSort}
+                        selectedSort={sortBy}
+                        handleDelete={handleDelete}
+                        favouritesStatus={favouritesStatus}
                     />
-                    <button
-                        className="btn btn-secondary mt-2"
-                        onClick={clearFilter}
-                    >
-                        Очистить
-                    </button>
-                </div>
-            )}
-            <div className="d-flex flex-column">
-                {SearchStatus(count)}
-                <UserTable
-                    users={usersCrop}
-                    onSort={handleSort}
-                    selectedSort={sortBy}
-                    handleDelete={handleDelete}
-                    favouritesStatus={favouritesStatus}
-                />
-                <div className="d-flex justify-content-center">
-                    <Pagination
-                        itemsCount={count}
-                        pageSize={pageSize}
-                        currentPage={currentPage}
-                        onPageChange={handlePageChange}
-                    />
+                    <div className="d-flex justify-content-center">
+                        <Pagination
+                            itemsCount={count}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
+    return "loading...";
 };
 Users.propTypes = {
     users: PropTypes.array,
