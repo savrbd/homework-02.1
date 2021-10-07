@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import TableHeader from "./tableHeader";
 import TableBody from "./tableBody";
-
 const Table = ({ onSort, selectedSort, columns, data }) => {
     return (
         <table className="table">
