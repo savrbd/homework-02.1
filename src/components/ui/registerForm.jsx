@@ -15,6 +15,7 @@ const RegicterForm = () => {
         qualities: [],
         licence: false
     });
+    console.log(data);
     const [errors, setErrors] = useState({});
     const [professions, setProffesion] = useState([]);
     const [qualities, setQualities] = useState({});

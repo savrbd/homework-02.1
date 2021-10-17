@@ -88,9 +88,10 @@ const UserChangePage = ({ match }) => {
             history.push(`/users/${userId}`);
         };
         return (
-            <div className="container mt-5">
+            <div className="container ">
                 <div className="row">
                     <div className="col-md-6 offset-md-3 shadow p-4">
+                        <i className="bi bi-gear"></i>
                         <form onSubmit={handleSubmit}>
                             <TextField
                                 label="Имя"

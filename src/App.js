@@ -6,7 +6,7 @@ import Main from "./layouts/main";
 import Login from "./layouts/login";
 import UserPage from "./components/page/userPage";
 import NotFound from "./components/not-found";
-import UserChangePage from "./components/page/userChangePage";
+import UserChangePageForm from "./components/page/userChangePageForm";
 
 const App = () => {
     return (
@@ -16,7 +16,7 @@ const App = () => {
                 <Route path="/login/:type?" component={Login} />
                 <Route
                     path="/users/:userId/edit"
-                    render={(props) => <UserChangePage {...props} />}
+                    render={(props) => <UserChangePageForm {...props} />}
                 />
                 <Route
                     path="/users/:userId"
