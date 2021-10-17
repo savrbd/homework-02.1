@@ -18,7 +18,7 @@ const CommentComponents = ({ comments, users, commentRemove }) => {
         ];
         const nowDateSecond = new Date().getTime();
         if (nowDateSecond - Number(dat) < 3600000) {
-            return ` ${Math.ceil((nowDateSecond - Number(dat)) / 60000)} минуты назад`;
+            return ` ${Math.ceil((nowDateSecond - Number(dat)) / 60000)} минут назад`;
         } else {
             return ` ${new Date(Number(dat)).getDate()} ${
                 arrMonth[new Date(Number(dat)).getMonth()]
