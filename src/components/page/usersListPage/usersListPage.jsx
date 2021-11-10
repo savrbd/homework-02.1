@@ -8,6 +8,7 @@ import GroupList from "../../common/groupList";
 import SearchStatus from "../../ui/searchStatus";
 import _ from "lodash";
 import SearchUser from "../../searchUser";
+import { useUser } from "../../../hooks/useUsers";
 
 const UsersListPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -16,29 +17,32 @@ const UsersListPage = () => {
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
     const pageSize = 8;
     const [search, setSearch] = useState("");
-    const [users, setUsers] = useState();
-    useEffect(() => {
-        api.users.fetchAll().then((data) => setUsers(data));
-    }, []);
-    let newUsers = users;
+    const { users } = useUser();
+    console.log(users);
+    // const [users, setUsers] = useState();
+    // useEffect(() => {
+    //     api.users.fetchAll().then((data) => setUsers(data));
+    // }, []);
+    const newUsers = users;
     let foundUser = "";
     const handleDelete = (userId) => {
-        newUsers = users.filter((user) => {
-            return user._id !== userId;
-        });
-        setUsers(newUsers);
+        console.log(userId);
+        // newUsers = users.filter((user) => {
+        //     return user._id !== userId;
+        // });
+        // setUsers(newUsers);
     };
 
     const favouritesStatus = (Id) => {
-        setUsers(
-            newUsers.filter((user) => {
-                if (user._id === Id) {
-                    user.status = !user.status;
-                    return user;
-                }
+        // setUsers(
+        newUsers.filter((user) => {
+            if (user._id === Id) {
+                user.status = !user.status;
                 return user;
-            })
-        );
+            }
+            return user;
+        });
+        // );
     };
 
     useEffect(() => {

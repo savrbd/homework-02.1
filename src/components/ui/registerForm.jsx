@@ -15,7 +15,6 @@ const RegicterForm = () => {
         qualities: [],
         licence: false
     });
-    console.log(data);
     const [errors, setErrors] = useState({});
     const [professions, setProffesion] = useState([]);
     const [qualities, setQualities] = useState({});
@@ -72,6 +71,7 @@ const RegicterForm = () => {
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
+    // console.log("validate", validate);
     const isValid = Object.keys(errors).length === 0;
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -79,6 +79,7 @@ const RegicterForm = () => {
         if (!isValid) return;
         console.log(data);
     };
+    // console.log(errors);
     return (
         <form onSubmit={handleSubmit}>
             <TextField

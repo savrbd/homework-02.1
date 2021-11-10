@@ -1,9 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const TextAria = ({ label, name, value, onChange }) => {
+const TextAria = ({ label, name, value, onChange, error }) => {
     const handleChange = ({ target }) => {
         onChange({ name: target.name, value: target.value });
+    };
+    const getInputClasses = () => {
+        return "form-control" + (error ? " is-invalid" : "");
     };
     return (
         <div className="mb-4">
@@ -15,7 +18,7 @@ const TextAria = ({ label, name, value, onChange }) => {
                     name={name}
                     value={value}
                     onChange={handleChange}
-                    className="form-control"
+                    className={getInputClasses()}
                 />
             </div>
         </div>
@@ -26,7 +29,8 @@ TextAria.propTypes = {
     label: PropTypes.string,
     name: PropTypes.string,
     value: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    error: PropTypes.string
 };
 
 export default TextAria;

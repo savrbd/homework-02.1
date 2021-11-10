@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Bookmark from "../common/bookmark";
-import Qualities from "./qualities";
+// import Qualities from "./qualities";
 import Table from "../common/table";
 import { Link } from "react-router-dom";
+import Profession from "./profession";
+import Qualities2 from "./qualities2";
 
 const UserTable = ({
     users,
@@ -16,13 +18,20 @@ const UserTable = ({
         name: {
             path: "name",
             name: "Имя",
-            component: (user) => <Link to={`/users/${user._id}`}>{user.name}</Link>
+            component: (user) => (
+                <Link to={`/users/${user._id}`}>{user.name}</Link>
+            )
         },
         qualities: {
             name: "Качество",
-            component: (user) => <Qualities qualities={user.qualities} />
+            // component: (user) => <Qualities qualities={user.qualities} />
+            component: (user) => <Qualities2 ArrayId={user.qualities} />
         },
-        professions: { path: "profession.name", name: "Профессия" },
+        // professions: { path: "profession.name", name: "Профессия" },
+        professions: {
+            name: "Профессия",
+            component: (user) => <Profession id={user.profession} />
+        },
         completedMeetings: {
             path: "completedMeetings",
             name: "Встретился, раз"

@@ -4,23 +4,32 @@ import { validator } from "../../../utils/validator";
 import React, { useState, useEffect } from "react";
 import TextAria from "../../common/form/textAria";
 
-const CreateComment = ({ users, onSubmitComment, data, onChange }) => {
+const CreateComment = ({ users, onSubmitComment, onChange, data }) => {
     const [errors, setErrors] = useState({});
     const validatorConfig = {
-        name: {
+        email: {
+            isRequired: {
+                message: "Обязательно выберите вашу профессию "
+            }
+        },
+        password: {
             isRequired: {
                 message: "Обязательно выберите вашу профессию "
             }
         }
     };
-    useEffect(() => {
-        validate();
-    }, [data]);
+
     const validate = () => {
         const errors = validator(data, validatorConfig);
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
+    useEffect(() => {
+        validate();
+    }, []);
+    console.log(errors);
+    const isValid = Object.keys(errors).length === 0;
+    console.log(isValid);
     return (
         <>
             <h1>New Comment</h1>
@@ -37,11 +46,13 @@ const CreateComment = ({ users, onSubmitComment, data, onChange }) => {
                 name="content"
                 value={data.content}
                 onChange={onChange}
+                error={errors.email}
             />
             <div className="d-flex justify-content-end">
                 <button
                     type="submit"
                     className="btn btn-primary"
+                    disabled={!isValid}
                     onClick={() => {
                         onSubmitComment(data);
                     }}
