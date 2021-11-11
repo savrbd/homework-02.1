@@ -24,10 +24,8 @@ const UserTable = ({
         },
         qualities: {
             name: "Качество",
-            // component: (user) => <Qualities qualities={user.qualities} />
             component: (user) => <Qualities2 ArrayId={user.qualities} />
         },
-        // professions: { path: "profession.name", name: "Профессия" },
         professions: {
             name: "Профессия",
             component: (user) => <Profession id={user.profession} />
