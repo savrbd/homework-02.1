@@ -1,6 +1,6 @@
 import React from "react";
 import NavBar from "./components/ui/navBar";
-import UsersListPage from "./components/page/usersListPage";
+import Users from "./layouts/users";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Main from "./layouts/main";
 import Login from "./layouts/login";
@@ -11,32 +11,37 @@ import UserProvider from "./hooks/useUsers";
 import { ToastContainer } from "react-toastify";
 import { ProfessionProvider } from "./hooks/useProfession";
 import { QualitiesProvider } from "./hooks/useQualities";
+import AuthProvider from "./hooks/useAuth";
 const App = () => {
     return (
         <>
-            <NavBar />
-            <Switch>
+            <AuthProvider>
+                <NavBar />
                 <ProfessionProvider>
                     <QualitiesProvider>
-                        <Route path="/login/:type?" component={Login} />
                         <UserProvider>
-                            <Route
-                                path="/users/:userId/edit"
-                                render={(props) => <UserChangePageForm {...props} />}
-                            />
-                            <Route
-                                path="/users/:userId"
-                                render={(props) => <UserPage {...props} />}
-                            />
-                            <Route path="/users" component={UsersListPage} />
+                            <Switch>
+                                <Route path="/login/:type?" component={Login} />
+                                <Route
+                                    path="/users/:userId/edit"
+                                    render={(props) => (
+                                        <UserChangePageForm {...props} />
+                                    )}
+                                />
+                                <Route
+                                    path="/users/:userId"
+                                    render={(props) => <UserPage {...props} />}
+                                />
+                                <Route path="/users" component={Users} />
+                                <Route path="/" component={Main} />
+                                <Route path="/404" component={NotFound} />
+                                <Redirect to="/404" />
+                            </Switch>
                         </UserProvider>
                     </QualitiesProvider>
                 </ProfessionProvider>
-                <Route path="/" component={Main} />
-                <Route path="/404" component={NotFound} />
-                <Redirect to="/404" />
-            </Switch>
-            <ToastContainer/>
+            </AuthProvider>
+            <ToastContainer />
         </>
     );
 };

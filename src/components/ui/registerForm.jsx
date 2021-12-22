@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { validator } from "../../utils/validator";
 import TextField from "../common/form/textField";
-import api from "../../api";
+// import api from "../../api";
 import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import MultiSelectField from "../common/form/myltiSelectField";
 import CheckBoxField from "../common/form/checkBoxField";
+import { useQualities } from "../../hooks/useQualities";
+import { useProfessions } from "../../hooks/useProfession";
+import { useAuth } from "../../hooks/useAuth";
+import { useHistory } from "react-router-dom";
 const RegicterForm = () => {
+    const history = useHistory();
     const [data, setData] = useState({
         email: "",
         password: "",
@@ -15,13 +20,24 @@ const RegicterForm = () => {
         qualities: [],
         licence: false
     });
+    const { signUp } = useAuth();
+    const { qualities } = useQualities();
+    const qualitiesList = qualities.map((q) => ({
+        label: q.name,
+        value: q._id
+    }));
+    const { professions } = useProfessions();
+    const professionsList = professions.map((p) => ({
+        label: p.name,
+        value: p._id
+    }));
     const [errors, setErrors] = useState({});
-    const [professions, setProffesion] = useState([]);
-    const [qualities, setQualities] = useState({});
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => setProffesion(data));
-        api.qualities.fetchAll().then((data) => setQualities(data));
-    }, []);
+    // const [professions, setProffesion] = useState([]);
+    // const [qualities, setQualities] = useState({});
+    // useEffect(() => {
+    //     api.professions.fetchAll().then((data) => setProffesion(data));
+    //     api.qualities.fetchAll().then((data) => setQualities(data));
+    // }, []);
     const handleChange = (target) => {
         setData((prevState) => ({
             ...prevState,
@@ -59,7 +75,8 @@ const RegicterForm = () => {
         },
         licence: {
             isRequired: {
-                message: "Вы не можете использовать наш сервис без подтверждения лицензионного соглашения "
+                message:
+                    "Вы не можете использовать наш сервис без подтверждения лицензионного соглашения "
             }
         }
     };
@@ -73,13 +90,24 @@ const RegicterForm = () => {
     };
     // console.log("validate", validate);
     const isValid = Object.keys(errors).length === 0;
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        console.log(data);
+        const newData = {
+            ...data,
+            qualities: data.qualities.map((q) => q.value)
+        };
+        try {
+            await signUp(newData);
+            history.push("/");
+        } catch (error) {
+            console.log(error);
+            setErrors(error);
+        }
     };
     // console.log(errors);
+    // const qualitiesList = qualities.map(q=>({label:q.name, value:q._id}))
     return (
         <form onSubmit={handleSubmit}>
             <TextField
@@ -100,7 +128,7 @@ const RegicterForm = () => {
             <SelectField
                 label="Выбери свою профессию"
                 defaultOption="Choose..."
-                options={professions}
+                options={professionsList}
                 onChange={handleChange}
                 value={data.profession}
                 error={errors.profession}
@@ -117,7 +145,7 @@ const RegicterForm = () => {
                 label="Выберите ваш пол"
             />
             <MultiSelectField
-                options={qualities}
+                options={qualitiesList}
                 onChange={handleChange}
                 name="qualities"
                 label="Выберите ваши качества"
