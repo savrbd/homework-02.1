@@ -11,8 +11,8 @@ const UserTable = ({
     users,
     onSort,
     selectedSort,
-    favouritesStatus,
-    handleDelete
+    favouritesStatus
+    // handleDelete
 }) => {
     const columns = {
         name: {
@@ -45,19 +45,19 @@ const UserTable = ({
                     favouritesStatus={favouritesStatus}
                 />
             )
-        },
-        delete: {
-            component: (user) => (
-                <button
-                    className="badge bg-danger"
-                    onClick={() => {
-                        handleDelete(user._id);
-                    }}
-                >
-                    delete
-                </button>
-            )
         }
+        // delete: {
+        //     component: (user) => (
+        //         <button
+        //             className="badge bg-danger"
+        //             onClick={() => {
+        //                 handleDelete(user._id);
+        //             }}
+        //         >
+        //             delete
+        //         </button>
+        //     )
+        // }
     };
 
     return (
@@ -72,7 +72,7 @@ const UserTable = ({
 
 UserTable.propTypes = {
     users: PropTypes.array.isRequired,
-    handleDelete: PropTypes.func,
+    // handleDelete: PropTypes.func,
     favouritesStatus: PropTypes.func,
     onSort: PropTypes.func,
     selectedSort: PropTypes.object.isRequired

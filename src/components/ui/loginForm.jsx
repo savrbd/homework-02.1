@@ -13,7 +13,7 @@ const LoginForm = () => {
         stayOn: false
     });
     const history = useHistory();
-    const { signIn } = useAuth();
+    const { logIn } = useAuth();
     const [errors, setErrors] = useState({});
     const handleChange = (target) => {
         setData((prevState) => ({
@@ -88,10 +88,13 @@ const LoginForm = () => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        console.log(data);
         try {
-            await signIn(data);
-            history.push("/");
+            await logIn(data);
+            history.push("/users"
+                // history.location.state.from.pathname
+                //     ? history.location.state.from.pathname
+                //     : "/"
+            );
         } catch (error) {
             console.log(error);
             setErrors(error);

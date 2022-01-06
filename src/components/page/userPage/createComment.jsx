@@ -1,17 +1,12 @@
-import SelectField2 from "../../common/form/selectField2";
+// import SelectField2 from "../../common/form/selectField2";
 import PropTypes from "prop-types";
 import { validator } from "../../../utils/validator";
 import React, { useState, useEffect } from "react";
 import TextAria from "../../common/form/textAria";
 
-const CreateComment = ({ users, onSubmitComment, onChange, data }) => {
+const CreateComment = ({ onSubmitComment, onChange, data }) => {
     const [errors, setErrors] = useState({});
     const validatorConfig = {
-        email: {
-            isRequired: {
-                message: "Обязательно выберите вашу профессию "
-            }
-        },
         password: {
             isRequired: {
                 message: "Обязательно выберите вашу профессию "
@@ -27,24 +22,22 @@ const CreateComment = ({ users, onSubmitComment, onChange, data }) => {
     useEffect(() => {
         validate();
     }, []);
-    console.log(errors);
     const isValid = Object.keys(errors).length === 0;
-    console.log(isValid);
     return (
         <>
             <h1>New Comment</h1>
-            <SelectField2
+            {/* <SelectField2
                 label=""
                 defaultOption="Выберите пользователя"
                 options={users}
                 onChange={onChange}
                 value={data.userId}
                 error={errors.name}
-            />
+            /> */}
             <TextAria
                 label="Сообщение"
                 name="content"
-                value={data.content}
+                value={data.content || ""}
                 onChange={onChange}
                 error={errors.email}
             />
@@ -64,7 +57,7 @@ const CreateComment = ({ users, onSubmitComment, onChange, data }) => {
     );
 };
 CreateComment.propTypes = {
-    users: PropTypes.array,
+    // users: PropTypes.array,
     data: PropTypes.object,
     onSubmitComment: PropTypes.func,
     onChange: PropTypes.func

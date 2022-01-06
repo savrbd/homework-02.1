@@ -23,7 +23,8 @@ export const QualitiesProvider = ({ children }) => {
         getQualitiesList();
     }, []);
     function errorCatcher(error) {
-        const { message } = error.responce.data;
+        console.log(error);
+        const { message } = error.response.data;
         setError(message);
     }
     function getQualities(id) {

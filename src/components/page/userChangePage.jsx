@@ -1,37 +1,48 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import MultiSelectField from "../common/form/myltiSelectField";
+import MultiSelectField2 from "../common/form/myltiSelectField2";
 import RadioField from "../common/form/radioField";
 import SelectField from "../common/form/selectField";
 import TextField from "../common/form/textField";
-import api from "../../api";
+// import api from "../../api";
 import { validator } from "../../utils/validator";
 import { useHistory } from "react-router-dom";
+import { useUser } from "../../hooks/useUsers";
+import { useQualities } from "../../hooks/useQualities";
+import { useProfessions } from "../../hooks/useProfession";
+import { useAuth } from "../../hooks/useAuth";
 
 const UserChangePage = ({ match }) => {
     const history = useHistory();
     const userId = match.params.userId;
     const [errors, setErrors] = useState({});
-    const [user, setUser] = useState();
-    const [professions, setProffesion] = useState([]);
-    const [qualities, setQualities] = useState({});
-    useEffect(() => {
-        api.users.getById(userId).then((data) => setUser(data));
-    }, []);
+    const { getUserById } = useUser();
+    const user = getUserById(userId);
+    const { qualities } = useQualities();
+    const { professions } = useProfessions();
+    // const [user, setUser] = useState();
+    // const [professions, setProffesion] = useState([]);
+    // const [qualities, setQualities] = useState({});
+    // useEffect(() => {
+    //     api.users.getById(userId).then((data) => setUser(data));
+    // }, []);
+    const { updateUser } = useAuth();
     const [data, setData] = useState({
-        email: "",
+        name: `${user.name}`,
+        email: `${user.email}`,
         password: "",
         profession: "",
         sex: "male",
         qualities: []
     });
-    useEffect(() => {
-        api.users.getById(userId).then((data) => setUser(data));
-    }, []);
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => setProffesion(data));
-        api.qualities.fetchAll().then((data) => setQualities(data));
-    }, []);
+
+    // useEffect(() => {
+    //     api.users.getById(userId).then((data) => setUser(data));
+    // }, []);
+    // useEffect(() => {
+    //     api.professions.fetchAll().then((data) => setProffesion(data));
+    //     api.qualities.fetchAll().then((data) => setQualities(data));
+    // }, []);
 
     const validatorConfig = {
         email: {
@@ -58,33 +69,53 @@ const UserChangePage = ({ match }) => {
         return Object.keys(errors).length === 0;
     };
     if (user && qualities && professions) {
-        const defaultQuaties = user.qualities.map((item) => ({
-            label: item.name,
-            value: item._id
+        const defaultProfession = professions.find((p) => {
+            return p._id === user.profession;
+        });
+        const professionsList = professions.map((p) => ({
+            label: p.name,
+            value: p._id
         }));
-        const handleSubmit = (e) => {
+        const qualitiesList = qualities.map((q) => ({
+            label: q.name,
+            value: q._id
+        }));
+        const defaultQualities = user.qualities.map((item) => {
+            return (item = qualities.find((q) => {
+                return q._id === item;
+            }));
+        });
+        const handleSubmit = async (e) => {
             e.preventDefault();
             const data2Profession = Object.values(professions).find((item) => {
                 return item._id === data.profession;
             });
+            const data3Profession = data2Profession._id;
             const data2QualitiesArray = data.qualities;
             const data2Qualities = data2QualitiesArray.map((item) =>
                 Object.values(qualities).find((item1) => {
                     return item1._id === item.value;
                 })
             );
+            const data3Qualities = data2Qualities.map((item) => {
+                return item._id;
+            });
             const data2 = {
+                ...user,
+                name: `${data.name}`,
                 email: `${data.email}`,
                 password: "",
                 profession:
-                    data.profession === "" ? user.profession : data2Profession,
+                    data.profession === "" ? user.profession : data3Profession,
                 sex: "male",
                 qualities:
                     data.qualities.length === 0
                         ? user.qualities
-                        : data2Qualities
+                        : data3Qualities
             };
-            api.users.update(userId, data2);
+            console.log(data2);
+            await updateUser(data2);
+            // api.users.update(userId, data2);
             history.push(`/users/${userId}`);
         };
         return (
@@ -96,7 +127,7 @@ const UserChangePage = ({ match }) => {
                             <TextField
                                 label="Имя"
                                 name="name"
-                                value={user.name}
+                                value={data.name}
                                 onChange={handleChange}
                             />
                             <TextField
@@ -108,8 +139,12 @@ const UserChangePage = ({ match }) => {
                             />
                             <SelectField
                                 label="Выбери свою профессию"
-                                defaultOption={user.profession.name}
-                                options={professions}
+                                defaultOption={
+                                    defaultProfession
+                                        ? defaultProfession.name
+                                        : null
+                                }
+                                options={professionsList}
                                 onChange={handleChange}
                                 value={data.profession}
                             />
@@ -124,12 +159,12 @@ const UserChangePage = ({ match }) => {
                                 value={data.sex}
                                 label="Выберите ваш пол"
                             />
-                            <MultiSelectField
-                                options={qualities}
+                            <MultiSelectField2
+                                options={qualitiesList}
                                 onChange={handleChange}
                                 name="qualities"
                                 label="Выберите ваши качества"
-                                defaultQuaties={defaultQuaties}
+                                defaultQuaties={defaultQualities}
                             />
                             {/* <Link to={`/users/${userId}`}> */}
                             <button
